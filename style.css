@@ -1,0 +1,7 @@
+.bg-pink {
+    background: pink;
+}
+
+.bg-trans {
+    background: rgba(0, 0, 0, 0.1);
+}
