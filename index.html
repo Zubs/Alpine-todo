@@ -14,19 +14,21 @@
 
     <title>Alpine Todo</title>
 </head>
-<body class="container bg-pink">
+<body class="container bg-pink" x-data="{ viewing: 'all' }">
     <main class="row justify-content-center my-5 py-5">
         <div class="card col-lg-5 px-5 py-5 shadow-sm bg-trans">
             <div class="d-flex justify-content-between align-items-center">
                 <h2>Todos</h2>
                 <div>
-                    <span class="badge bg-danger rounded-pill">Cancelled</span>
-                    <span class="badge bg-success rounded-pill">Completed</span>
+                    <span class="badge bg-primary rounded-pill" x-show="viewing !== 'all'" style="display: none" @click="viewing = 'all'">All</span>
+                    <span class="badge bg-white text-black rounded-pill" @click="viewing = 'open'">Opened</span>
+                    <span class="badge bg-danger rounded-pill" @click="viewing = 'cancelled'">Cancelled</span>
+                    <span class="badge bg-success rounded-pill" @click="viewing = 'completed'">Completed</span>
                 </div>
             </div>
             <ul class="list-group mt-3" x-data="{ todos: [
                 {
-                    'name': 'Write an article',
+                    'name': 'Played games',
                     'status': 'completed' // Or cancelled, open
                 },
                 {
@@ -34,22 +36,19 @@
                     'status': 'open' // Or cancelled, open
                 },
                 {
-                    'name': 'Write an article',
+                    'name': 'Spend $20million on food.',
                     'status': 'cancelled' // Or cancelled, open
                 }
-            ]}">
-                <template x-for="todo in todos" x-data="{ list_class: ' list-group-item d-flex justify-content-between align-items-center' }">
-                    <li x-bind:class="todo.status === 'completed' ? 'list-group-item-success' + list_class : todo.status === 'cancelled' ? 'list-group-item-danger' + list_class : list_class" x-text="todo.name">
-                        First Item
-                        <div>
-                            <span class="badge bg-success rounded">
-                                <i class="fas fa-check-circle text-white"></i>
-                            </span>
-                            <span class="badge bg-danger rounded">
-                                <i class="fas fa-window-close text-white"></i>
-                            </span>
-                        </div>
-                    </li>
+            ] }">
+                <template x-for="todo in todos" x-data="{ list_class: ' list-group-item' }">
+                    <li
+                            x-data="{ will_show: viewing === 'all' }"
+                            x-init="$watch('viewing', value => will_show = value === 'all' || value === todo.status )"
+                            x-bind:class="todo.status === 'completed' ? 'list-group-item-success' + list_class : todo.status === 'cancelled' ? 'list-group-item-danger' + list_class : list_class"
+                            x-text="todo.name"
+                            x-transition
+                            x-show="will_show"
+                    ></li>
                 </template>
             </ul>
             <button type="button" class="btn btn-primary form-control mt-2">Add New Todo</button>
