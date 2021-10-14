@@ -29,18 +29,27 @@
             <ul class="list-group mt-3" x-data="{ todos: [
                 {
                     'name': 'Played games',
-                    'status': 'completed' // Or cancelled, open
+                    'status': 'completed'
                 },
                 {
                     'name': 'Write an article',
-                    'status': 'open' // Or cancelled, open
+                    'status': 'open'
                 },
                 {
                     'name': 'Spend $20million on food.',
-                    'status': 'cancelled' // Or cancelled, open
+                    'status': 'cancelled'
                 }
             ] }">
-                <template x-for="todo in todos" x-data="{ list_class: ' list-group-item' }">
+                <li class="list-group-item">
+                    <input
+                            type="text"
+                            class="form-control"
+                            @keyup.enter="todos.push({
+                                'name': event.target.value,
+                                'status': 'open'
+                            }); event.target.value = ''; event.target.blur()">
+                </li>
+                <template x-for="(todo, index) in todos" x-data="{ list_class: ' list-group-item' }">
                     <li
                             x-data="{ will_show: viewing === 'all' }"
                             x-init="$watch('viewing', value => will_show = value === 'all' || value === todo.status )"
@@ -48,10 +57,10 @@
                             x-text="todo.name"
                             x-transition
                             x-show="will_show"
+                            @click="console.log(todo, index)"
                     ></li>
                 </template>
             </ul>
-            <button type="button" class="btn btn-primary form-control mt-2">Add New Todo</button>
         </div>
     </main>
 
